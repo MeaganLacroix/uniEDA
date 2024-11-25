@@ -63,12 +63,12 @@ uniEDA <- function(data, cv_flag = 30,
 
   # Round numeric columns
   summary_table <- summary_table %>%
-    mutate(across(c(Missingpercent, Mean, Median, SD, Min, Max, Q1, Q3, IQR, Skewness, Kurtosis, CV,       PercentOutliers), ~round(., 2)))
+    mutate(across(c(Missingpercent, Mean, Median, SD, Min, Max, Q1, Q3, IQR, Skewness, Kurtosis, CV, PercentOutliers), ~round(., 2)))
 
 
   ## Create kable table with specified flags
   kable_table <- summary_table %>%
-    kbl(col.names = c("Variable", "N", "Missing", "Missing %", "Mean", "Median", "SD", "Min", "Max",       "Q1", "Q3", "IQR", "Skewness", "Kurtosis", "N Outliers", "Outliers %", "CV"),
+    kbl(col.names = c("Variable", "N", "Missing", "Missing %", "Mean", "Median", "SD", "Min", "Max", "Q1", "Q3", "IQR", "Skewness", "Kurtosis", "N Outliers", "Outliers %", "CV"),
         align = "c") %>%
     kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
                   full_width = F) %>%
