@@ -14,74 +14,85 @@
 #' @examples
 #'
 #'
-uniEDA <- function(data, cv_flag = 30,
-                                  missing_flag = 5,
-                                  skewness_flag = 2,
-                                  kurtosis_flag = 2,
-                                  outlier_flag = 5) {
+uniEDA <- function(data,
+                   cv_flag = 30,             # continuous criteria
+                   missing_flag = 5,         # continuous criteria
+                   skewness_flag = 2,        # continuous criteria
+                   kurtosis_flag = 2,        # continuous criteria
+                   outlier_flag = 5,         # continuous criteria
+                   min_category = 3,         # minimum number of categories to be considered as categorical variables
+                   percentage_flag = 50,     # categorical criteria
+                   SMD_flag = 0.2,           # categorical criteria
+                   cont_boxplots = FALSE,    # continuous plots
+                   cont_densplots = FALSE,   # continuous plots
+                   cat_barcharts = FALSE,    # categorical plots
+                   exclud_vars = NULL        # varibles to be excluded, such as IDs
+                   ) {
 
-  library(dplyr)
-  library(tidyr)
-  library(kableExtra)
-  library(e1071)
+  library(here())
+  source(here("R", "cont_tables.R"))
+  source(here("R", "cont_plots.R"))
+  source(here("R", "cat_tables.R"))
+  source(here("R", "cat_barcharts.R"))
 
-  # Filter numeric columns
-  numeric_data <- data %>% select(where(is.numeric))
+  # Remove specified variables
+  data <- data %>% select(setdiff(names(data), exclud_vars))
 
-  # Calculate summary statistics
-  summary_table <- numeric_data %>%
-    summarise(across(everything(), list(
-      N = ~sum(!is.na(.)),
-      Missing = ~sum(is.na(.)),
-      Missingpercent = ~mean(is.na(.)) * 100,
-      Mean = ~mean(., na.rm = TRUE),
-      Median = ~median(., na.rm = TRUE),
-      SD = ~sd(., na.rm = TRUE),
-      Min = ~min(., na.rm = TRUE),
-      Max = ~max(., na.rm = TRUE),
-      Q1 = ~quantile(., 0.25, na.rm = TRUE),
-      Q3 = ~quantile(., 0.75, na.rm = TRUE),
-      IQR = ~IQR(., na.rm = TRUE),
-      Skewness = ~skewness(., na.rm = TRUE),
-      Kurtosis = ~kurtosis(., na.rm = TRUE),
-      NOutliers = ~sum(. < quantile(., 0.25, na.rm = TRUE) - 1.5 * IQR(., na.rm = TRUE) |
-                         . > quantile(., 0.75, na.rm = TRUE) + 1.5 * IQR(., na.rm = TRUE), na.rm = TRUE),
-      PercentOutliers = ~sum(. < quantile(., 0.25, na.rm = TRUE) - 1.5 * IQR(., na.rm = TRUE) |
-                             . > quantile(., 0.75, na.rm = TRUE) + 1.5 * IQR(., na.rm = TRUE), na.rm = TRUE) / sum(!is.na(.)) * 100),
-      .names = "{col}_{fn}")) %>%
+  # Functions to filter continuous variables
+  identify_continuous_vars <- function(data, min_category = 3) {
+    continuous_vars <- sapply(data, function(col) {
+      is.numeric(col) && length(unique(col)) > min_category
+    })
+    return(names(continuous_vars[continuous_vars]))
+    }
+  select_numerical_data <- function(data, min_category = 3) {
+    continuous_vars <- identify_continuous_vars(data, min_category)
+    numeric_data <- data[, continuous_vars, drop = FALSE]
+    return(numeric_data)
+    }
 
-      pivot_longer(
-      cols = everything(),
-      names_to = c("Variable", "Metric"),
-      names_pattern = "(.*)_(.*)") %>%
+  # Separate continuous and categorical variables
+  numeric_data_ind <- identify_continuous_vars(data, min_category=min_category)
+  numeric_data <- select_numerical_data(data, min_category=min_category)
+  cat_data <- data %>% select(setdiff(names(data), numeric_data_ind))
 
-      pivot_wider(names_from = Metric, values_from = value)
+  # find whether continuous and categorical variables are empty
+  is.na.num <- length(numeric_data) == 0
+  is.na.cat <- length(cat_data) == 0
 
-  #Add CV
-  summary_table <- summary_table %>%
-    mutate(CV = abs(SD / Mean * 100))
+  if(!is.na.num) {
+    # Create summary table for continuous variables
+    readline("Press Enter to proceed to continuous summary table...")
+    print(summarize_cont(numeric_data,
+                         cv_flag = cv_flag,
+                         missing_flag = missing_flag,
+                         skewness_flag = skewness_flag,
+                         kurtosis_flag = kurtosis_flag,
+                         outlier_flag = outlier_flag))
 
-  # Round numeric columns
-  summary_table <- summary_table %>%
-    mutate(across(c(Missingpercent, Mean, Median, SD, Min, Max, Q1, Q3, IQR, Skewness, Kurtosis, CV, PercentOutliers), ~round(., 2)))
+    # Create boxplots and density plots for continuous variables
+    if(cont_boxplots){
+      readline("Press Enter to proceed to boxplots...")
+      generate_boxplots(numeric_data)
+    }
+    if(cont_densplots){
+      readline("Press Enter to proceed to density plots...")
+      generate_density_plots(numeric_data)
+    }
+  } else {print("No suitable continuous variables found in the dataset!")}
 
 
-  ## Create kable table with specified flags
-  kable_table <- summary_table %>%
-    kbl(col.names = c("Variable", "N", "Missing", "Missing %", "Mean", "Median", "SD", "Min", "Max", "Q1", "Q3", "IQR", "Skewness", "Kurtosis", "N Outliers", "Outliers %", "CV"),
-        align = "c") %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                  full_width = F) %>%
-    column_spec(1:17, color = "black") %>%
-    column_spec(4, color = ifelse(summary_table$Missingpercent >= missing_flag, "red", "black")) %>%
-    column_spec(13, color = ifelse(abs(summary_table$Skewness) > skewness_flag, "red", "black")) %>%
-    column_spec(14, color = ifelse(abs(summary_table$Kurtosis)-3 > kurtosis_flag, "red", "black")) %>%
-    column_spec(16, color = ifelse(abs(summary_table$PercentOutliers) >= outlier_flag, "red", "black")) %>%
-    column_spec(17, color = ifelse(summary_table$CV > cv_flag, "red", "black" ))
+  if(!is.na.cat) {
+    # Create summary table for categorical variables
+    readline("Press Enter to proceed to categorical summary table...")
+    print(summarize_cat(cat_data,
+                        percentage_flag = percentage_flag,
+                        SMD_flag = SMD_flag))
 
-  return(kable_table)
-
+    # Create bar charts for categorical variables
+    if (cat_barcharts){
+      readline("Press Enter to proceed to bar charts...")
+      generate_bar_charts(cat_data)
+    }
+  } else {print("No suitable categorical variables found in the dataset!")}
 }
-
-
-
