@@ -2,10 +2,7 @@ library(dplyr)
 library(tidyr)
 library(kableExtra)
 
-summarize_cat <- function(data,
-                          percentage_flag = 50,
-                          SMD_flag = 0.2) {
-  # Initialize an empty data frame for the results
+summarize_cat <- function(data, var_names) {
   result <- data.frame(
     Variable = character(),
     Level = character(),
@@ -14,85 +11,62 @@ summarize_cat <- function(data,
     SMD = numeric(),
     stringsAsFactors = FALSE
   )
-
-  for (var in names(data)) {
+  
+  for (var in var_names) {
     var_data <- data[[var]]
-
-    # Skip variables that are entirely NA
+    
     if (is.null(var_data) || all(is.na(var_data))) {
       next
     }
-
-    # Calculate basic statistics
+    
     freq <- table(var_data, useNA = "ifany")
     total <- sum(freq, na.rm = TRUE)
-    percent <- round(100 * as.numeric(freq) / total, 2)
-
-    # Calculate Standardized Mean Difference (SMD) for non-missing levels
-    non_missing_levels <- unique(as.character(var_data[!is.na(var_data)]))
+    percent <- round(100 * freq / total, 2)
+    
+    non_missing_levels <- levels(factor(var_data, exclude = NULL))
     smd <- sapply(non_missing_levels, function(level) {
-      in_level <- var_data == level
-      other <- !is.na(var_data) & !in_level
-      abs(mean(in_level) - mean(other))
+      p1 <- sum(var_data == level, na.rm = TRUE) / total
+      p2 <- sum(var_data != level, na.rm = TRUE) / (total * (length(non_missing_levels) - 1))
+      sqrt_pooled_var <- sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
+      if (sqrt_pooled_var == 0) return(0)
+      abs(p1 - p2) / sqrt_pooled_var
     })
-
-    # Include "Missing" level explicitly
+    
     missing_count <- sum(is.na(var_data))
     missing_percent <- round(100 * missing_count / nrow(data), 2)
-
-    # Combine results for all levels, including "Missing"
+    
     valid_levels <- c(non_missing_levels, "Missing")
-    valid_freq <- c(as.numeric(freq[non_missing_levels]), missing_count)
-    valid_percent <- c(percent[non_missing_levels], missing_percent)
-    valid_smd <- c(smd, NA)  # SMD for "Missing" is NA
-
-    # Debug: Check valid_levels and valid_percent
-    #print("DEBUG: Valid Levels and Percentages")
-    #print(valid_levels)
-    #print(valid_percent)
-
-    # Combine results for the variable
+    valid_freq <- c(as.numeric(freq), missing_count)
+    valid_percent <- c(percent, missing_percent)
+    valid_smd <- c(smd, NA)
+    
     var_result <- data.frame(
       Variable = var,
       Level = valid_levels,
       Frequency = valid_freq,
-      Percent = valid_percent, # Explicitly name Percent column
+      Percent = valid_percent,
       SMD = valid_smd
     )
-
-    # Append to the final result
+    
     result <- rbind(result, var_result)
   }
-
-
-  # Debug: Check the structure of result
-  #print("DEBUG: Result before replacing NA values")
-  #print(head(result))
-  #print(colnames(result)) # Confirm column names
-  #print(dim(result))
-
-  # Ensure no NA values in Percent or SMD (except for "Missing")
-  result$Percent[is.na(result$Percent)] <- 0
-  result$SMD[is.na(result$SMD) & result$Level != "Missing"] <- 0
-
-  # Stop if result is empty
-  if (nrow(result) == 0) {
-    stop("DEBUG: Result data frame is empty. Check input data or processing logic.")
-  }
-
-  # Create a well-styled summary table using kableExtra
+  
+  # Round SMD values to 3 decimal places
+  result$SMD <- round(result$SMD, 2)
+  
   kable_table <- result %>%
     kbl(
-      col.names = colnames(result), # Automatically match column names
-      align = "c",
-      row.names = FALSE # Suppress row numbers
+      col.names = colnames(result), 
+      align = "c", 
+      row.names = FALSE
     ) %>%
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                  full_width = FALSE) %>%
-    column_spec(4, color = ifelse(!is.na(result$Percent) & result$Percent > percentage_flag,
-                                  "red", "black")) %>%
-    column_spec(5, color = ifelse(!is.na(result$SMD) & result$SMD > SMD_flag,
-                                  "red", "black"))
-
+    kable_styling(
+      bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+      full_width = FALSE
+    ) %>%
+    column_spec(4, color = ifelse(!is.na(result$Percent) & result$Percent > 50, "red", "black")) %>%
+    column_spec(5, color = ifelse(!is.na(result$SMD) & result$SMD > 0.2, "red", "black"))
+  
   return(kable_table)
 }
+
