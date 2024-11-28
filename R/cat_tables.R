@@ -51,7 +51,7 @@ summarize_cat <- function(data, var_names) {
     result <- rbind(result, var_result)
   }
   
-  # Round SMD values to 3 decimal places
+  # Round SMD values to 2 decimal places
   result$SMD <- round(result$SMD, 2)
   
   kable_table <- result %>%
