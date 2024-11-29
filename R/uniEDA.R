@@ -19,6 +19,11 @@
 #' @examples
 #' uniEDA(armed_conf, cont_boxplots = TRUE, cont_denseplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
 #'
+#' Example data from
+#' Jawad M, Hone T, Vamos EP, Cetorelli V, Millett C.
+#' Implications of armed conflict for maternal and child health: A regression analysis of data from 181 countries for 2000-2019.
+#' PLoS Med. 2021 Sep 28;18(9):e1003810. doi: 10.1371/journal.pmed.1003810. PMID: 34582455; PMCID: PMC8478221.
+#'
 #' @return
 #' Continuous summary table: A tibble (if `cont_raw_output = TRUE`) or a `kableExtra` object (if `cont_raw_output = FALSE`):
 #'
