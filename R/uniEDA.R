@@ -7,7 +7,7 @@
 #' @param kurtosis_flag numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2
 #' @param outlier_flag numeric, flag for percentage of data that are outliers in continuous table, default set to 5%
 #' @param min_category numeric, minimum number of categories to be considered as categorical variables, default set to 3
-#' @param percentage_flag numeric, flag for frequency percent in categorical table, default set to 50
+#' @param percentage_flag numeric, flag for missing percent in categorical table, default set to 50
 #' @param SMD_flag numeric, flag for standardized mean difference in categorical table, default set to .2
 #' @param cont_boxplots logical, include continuous box plots TRUE or FALSE
 #' @param cont_densplots logical, include continuous density plots TRUE or FALSE
@@ -78,6 +78,7 @@ uniEDA <- function(data,
                    cont_densplots = FALSE,   # continuous plots
                    cat_barcharts = FALSE,    # categorical plots
                    cont_raw_output = FALSE,  # produce raw output in summary table
+                   cat_raw_output = FALSE,
                    exclud_vars = NULL        # variables to be excluded, such as IDs
 ) {
 
@@ -159,7 +160,8 @@ uniEDA <- function(data,
     readline("Press Enter to proceed to categorical summary table...")
     print(summarize_cat(cat_data,
                         percentage_flag = percentage_flag,
-                        SMD_flag = SMD_flag))
+                        SMD_flag = SMD_flag,
+                        cat_raw_output = cat_raw_output))
 
     # Create bar charts for categorical variables
     if (cat_barcharts){

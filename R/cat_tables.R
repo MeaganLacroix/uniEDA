@@ -1,7 +1,8 @@
 summarize_cat <- function(data,
                           var_names,
                           percentage_flag = 30,
-                          SMD_flag = 0.2) {
+                          SMD_flag = 0.2,
+                          cat_raw_output = FALSE) {
   result <- data.frame(
     Variable = character(),
     Level = character(),
@@ -79,9 +80,11 @@ summarize_cat <- function(data,
                                   "red", "black")) %>%
     column_spec(6, color = "royalblue3")  # Set Message column color to royalblue3
 
+  if (cat_raw_output) {
+    return(result)
+  }
+
   return(kable_table)
 }
 
-# Usage
-categorical_vars <- c("Year", "ISO", "region", "OECD", "armconf1", "drought", "earthquake")
-summarize_cat(finaldata, categorical_vars)
+
