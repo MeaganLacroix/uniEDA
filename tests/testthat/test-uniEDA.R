@@ -112,6 +112,24 @@ test_that("summarize_cont flags work correctly", {
   expect_true(any(grepl("Outliers", result$OutlierFlag)))
 })
 
+
+##################### test continuous plots ####################################
+test_that("generate_boxplots works correctly", {
+  data("iris")
+  expect_silent(generate_boxplots(iris)) # No errors
+
+  data("esoph")
+  expect_silent(generate_boxplots(esoph))
+})
+
+test_that("generate_density_plots works correctly", {
+  data("iris")
+  expect_silent(generate_density_plots(iris)) # No errors
+
+  data("esoph")
+  expect_silent(generate_density_plots(esoph))
+})
+
 ########################test uniEDA function#########################################################
 
 #####################test categorical bar charts ###################################################
