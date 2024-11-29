@@ -1,18 +1,24 @@
 Package: uniEDA
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Advanced Univariate Exploratory Data Analysis Tool
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Xinze (Cynthia) Yu,  Xingchen (Annie) Hu, Rebecca Raj​, Syeda Aiman Fatima, and Meagan Lacroix ​
+Maintainer: Xinze (Cynthia) Yu,  Xingchen (Annie) Hu, Rebecca Raj​, Syeda Aiman Fatima, and Meagan Lacroix ​
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+
+Description:
+uniEDA streamlines univariate exploratory data analysis, offering detailed summaries and visual diagnostics 
+for continuous and categorical variables. The package flags potential issues (e.g., skewness, kurtosis, outliers, missing data) 
+using customizable thresholds. It generates intuitive plots like histograms and bar charts with outlier annotation. 
+Ideal for data diagnostics and transformation recommendations.
+
 URL: https://github.com/MeaganLacroix/uniEDA
 BugReports: https://github.com/MeaganLacroix/uniEDA/issues
-Suggests: 
-    testthat (>= 3.0.0)
+
+Dependencies:
+R (>= 2.10)
+Suggested Packages:
+testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Depends: 
-    R (>= 2.10)
