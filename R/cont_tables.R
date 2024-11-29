@@ -8,8 +8,16 @@ summarize_cont <- function(data,
                            missing_flag = 5,
                            skewness_flag = 2,
                            kurtosis_flag = 2,
-                           outlier_flag = 5) {
+                           outlier_flag = 5,
+                           cont_raw_output = FALSE) {
+  # Check if the dataframe is empty
+  if (nrow(data) == 0) {
+    stop("The input dataframe is empty. Please provide a non-empty dataframe.")
+  }
 
+  if (all(sapply(data, function(col) all(is.na(col))))) {
+    stop("The input dataset contains only NA values in all columns. Please provide a valid dataset.")
+  }
   summary_table <- data %>%
     summarise(across(everything(), list(
       N = ~sum(!is.na(.)),
@@ -41,6 +49,7 @@ summarize_cont <- function(data,
     # Add CV
     mutate(CV = abs(SD / Mean * 100)) %>%
 
+
     # Round numeric columns
     mutate(across(c(Missingpercent, Mean, Median, SD, Min, Max, Q1, Q3,
                     IQR, Skewness, Kurtosis, CV, PercentOutliers),
@@ -52,8 +61,8 @@ summarize_cont <- function(data,
                             paste0("Highly skewed (", round(Skewness, 2),
                                    "). Consider transformation."), ""),
       KurtosisFlag = ifelse(abs(Kurtosis - 3) > kurtosis_flag,
-                            paste0("High kurtosis (", round(Kurtosis, 2),
-                                   "). Consider normalization."), ""),
+                            paste0("Excess kurtosis (", round(Kurtosis, 2),
+                                   " -3). Consider normalization."), ""),
       MissingFlag = ifelse(Missingpercent > missing_flag,
                            paste0("Missing ", round(Missingpercent, 2),
                                   "% data. Consider imputation."), ""),
@@ -64,12 +73,14 @@ summarize_cont <- function(data,
                            paste0("Outliers ", round(PercentOutliers, 2),
                                   "% present. Review data."), ""))
 
+
+
   # Create kable table with specified flags
   kable_table <- summary_table %>%
     kbl(col.names = c("Variable", "N", "Missing", "Missing %", "Mean",
                       "Median", "SD", "Min", "Max", "Q1", "Q3", "IQR",
                       "Skewness", "Kurtosis", "N Outliers", "Outliers %",
-                      "CV", "Skewness Message", "Kurtosis Message",
+                      "CV", "Skewness Message", "Excess Kurtosis Message",
                       "Missing Message", "CV Message", "Outlier Message"),
         align = "c") %>%
     kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
@@ -82,6 +93,9 @@ summarize_cont <- function(data,
     column_spec(17, color = ifelse(summary_table$CV > cv_flag | summary_table$CVFlag != "", "red", "black")) %>%
     column_spec(18:22, color = "royalblue3")
 
+  if (cont_raw_output) {
+    return(summary_table)
+  }
 
   return(kable_table)
 }

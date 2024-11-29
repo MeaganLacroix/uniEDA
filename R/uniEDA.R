@@ -1,17 +1,63 @@
-
-#' Title
+#' @title  univariate exploratory data analysis
+#' @description a function that returns descriptive tables and figures for continuous and categorical data
+#' @param data data frame, any dataset containing continuous and/or categorical data
+#' @param cv_flag numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30
+#' @param missing_flag numeric, flag for percentage of missing data in continuous table, default set to 5%
+#' @param skewness_flag numeric, flag for skewness in continuous table, default set to 2
+#' @param kurtosis_flag numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2
+#' @param outlier_flag numeric, flag for percentage of data that are outliers in continuous table, default set to 5%
+#' @param min_category numeric, minimum number of categories to be considered as categorical variables, default set to 3
+#' @param percentage_flag numeric, flag for frequency percent in categorical table, default set to 50
+#' @param SMD_flag numeric, flag for standardized mean difference in categorical table, default set to .2
+#' @param cont_boxplots logical, include continuous box plots TRUE or FALSE
+#' @param cont_densplots logical, include continuous density plots TRUE or FALSE
+#' @param cat_barcharts logical, include categorical bar charts TRUE or FALSE
+#' @param cont_raw_output logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table
+#' @param exclud_vars character, variables in dataset to be excluded
 #'
-#' @param data
-#' @param cv_flag
-#' @param missing_flag
-#' @param skewness_flag
-#' @param kurtosis_flag
-#' @param outlier_flag
+#' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu
+#' @examples
+#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_denseplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
 #'
 #' @return
-#' @export
+#' Continuous summary table: A tibble (if `cont_raw_output = TRUE`) or a `kableExtra` object (if `cont_raw_output = FALSE`):
 #'
-#' @examples
+#' - **Variable**: Name of the variable.
+#' - **N**: Number of non-missing values.
+#' - **Missing**: Number of missing values.
+#' - **Missingpercent**: Percentage of missing values.
+#' - **Mean**: Mean of the variable.
+#' - **Median**: Median of the variable.
+#' - **SD**: Standard deviation.
+#' - **Min**: Minimum value.
+#' - **Max**: Maximum value.
+#' - **Q1**: First quartile.
+#' - **Q3**: Third quartile.
+#' - **IQR**: Interquartile range.
+#' - **Skewness**: Skewness of the variable.
+#' - **Kurtosis**: Kurtosis of the variable.
+#' - **NOutliers**: Number of outliers.
+#' - **PercentOutliers**: Percentage of outliers.
+#' - **Flags**: Columns for flagged variables, such as `SkewnessFlag`, `KurtosisFlag`, `MissingFlag`, `CVFlag`, and `OutlierFlag`.
+#'
+#' Categorical summary table: A tibble (if `cat_raw_output = TRUE`) or a `kableExtra` object (if `cat_raw_output = FALSE`):
+#'
+#'    - **Variable**: Name of the variable.
+#'    - **Level**: Category levels.
+#'    - **Frequency**: Frequency of each category.
+#'    - **Percent**: Frequency percentage of each category.
+#'    - **SMD**: Standardized mean difference between levels
+#'
+#' Boxplots for Continuous Variables (if cont_boxplots = TRUE)
+#'    A `ggplot2` object showing boxplots of continuous variables.
+#'
+#' Density Plots for Continuous Variables (if cont_densplots = TRUE)
+#'    A `ggplot2` object showing density plots for continuous variables.
+#'
+#' Bar Charts for Categorical Variables (if cat_barcharts = TRUE)
+#'    A `ggplot2` object showing bar charts for categorical variables
+#'
+#' @export
 #'
 #'
 uniEDA <- function(data,
@@ -26,8 +72,28 @@ uniEDA <- function(data,
                    cont_boxplots = FALSE,    # continuous plots
                    cont_densplots = FALSE,   # continuous plots
                    cat_barcharts = FALSE,    # categorical plots
-                   exclud_vars = NULL        # varibles to be excluded, such as IDs
-                   ) {
+                   cont_raw_output = FALSE,  # produce raw output in summary table
+                   exclud_vars = NULL        # variables to be excluded, such as IDs
+) {
+
+  # Check if the dataframe is empty
+  if (nrow(data) == 0) {
+    stop("The input dataframe is empty. Please provide a non-empty dataframe.")
+  }
+  # Check if the dataframe is NA
+  if (all(sapply(data, function(col) all(is.na(col))))) {
+    stop("The input dataset contains only NA values in all columns. Please provide a valid dataset.")
+  }
+
+  if (!is.numeric(cv_flag) || !is.numeric(missing_flag) || !is.numeric(skewness_flag) || !is.numeric(kurtosis_flag)
+      || !is.numeric(outlier_flag) || !is.numeric(min_category) || !is.numeric(percentage_flag) || !is.numeric(SMD_flag)) {
+    stop("Argument must be numeric")
+  }
+
+  if(!is.logical(cont_boxplots) || !is.logical(cont_densplots) || !is.logical(cat_barcharts)) {
+    stop("Arugment must be logic")
+  }
+
 
   library(here())
   source(here("R", "cont_tables.R"))
@@ -68,7 +134,8 @@ uniEDA <- function(data,
                          missing_flag = missing_flag,
                          skewness_flag = skewness_flag,
                          kurtosis_flag = kurtosis_flag,
-                         outlier_flag = outlier_flag))
+                         outlier_flag = outlier_flag,
+                         cont_raw_output = cont_raw_output))
 
     # Create boxplots and density plots for continuous variables
     if(cont_boxplots){
