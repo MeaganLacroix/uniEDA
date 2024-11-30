@@ -6,6 +6,7 @@ source(here("R", "cat_tables.R"))
 source(here("R", "cat_barcharts.R"))
 source(here("R", "uniEDA.R"))
 
+
 ################ test continuous tables #####################################################################
 test_that("summarize_cont works with a standard dataset", {
   data <- data.frame(
@@ -358,6 +359,7 @@ test_that("uniEDA handles NA datasets gracefully", {
     "The input dataset contains only NA values in all columns. Please provide a valid dataset.")
 })
 
+#NOT TESTING FOR NOW
 # test_that("uniEDA works with a single-column dataset", {
 #   data <- data.frame(Var1 = rnorm(100, mean = 50, sd = 10))
 #   result <- uniEDA(data)
