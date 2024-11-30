@@ -2,23 +2,27 @@ Package: uniEDA
 Type: Package
 Title: Advanced Univariate Exploratory Data Analysis Tool
 Version: 0.1.0
-Author: Xinze (Cynthia) Yu,  Xingchen (Annie) Hu, Rebecca Raj​, Syeda Aiman Fatima, and Meagan Lacroix ​
-Maintainer: Xinze (Cynthia) Yu,  Xingchen (Annie) Hu, Rebecca Raj​, Syeda Aiman Fatima, and Meagan Lacroix ​
+Author: Xinze (Cynthia) Yu,  Xingchen (Annie) Hu, Rebecca Raj, Syeda Aiman Fatima, and Meagan Lacroix 
+Maintainer: Meagan Lacroix <meaganlacroix@alumni.trentu.ca>
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-
-Description:
-uniEDA streamlines univariate exploratory data analysis, offering detailed summaries and visual diagnostics 
-for continuous and categorical variables. The package flags potential issues (e.g., skewness, kurtosis, outliers, missing data) 
-using customizable thresholds. It generates intuitive plots like histograms and bar charts with outlier annotation. 
-Ideal for data diagnostics and transformation recommendations.
-
+Description: uniEDA streamlines univariate exploratory data analysis, offering detailed summaries and visual diagnostics 
+    for continuous and categorical variables. The package flags potential issues (e.g., skewness, kurtosis, outliers, missing data) 
+    using customizable thresholds. It generates intuitive plots like histograms and bar charts with outlier annotation. 
+    Ideal for data diagnostics and transformation recommendations.
 URL: https://github.com/MeaganLacroix/uniEDA
 BugReports: https://github.com/MeaganLacroix/uniEDA/issues
-
-Dependencies:
-R (>= 2.10)
-Suggested Packages:
-testthat (>= 3.0.0)
+Dependencies: R (>= 2.10)
+Suggested Packages: testthat (>= 3.0.0)
 Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    e1071,
+    ggplot2,
+    here,
+    kableExtra,
+    tidyr
+Suggests: 
+    testthat

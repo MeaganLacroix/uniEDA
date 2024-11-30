@@ -7,7 +7,7 @@
 #' @param kurtosis_flag numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2
 #' @param outlier_flag numeric, flag for percentage of data that are outliers in continuous table, default set to 5%
 #' @param min_category numeric, minimum number of categories to be considered as categorical variables, default set to 3
-#' @param percentage_flag numeric, flag for missing percent in categorical table, default set to 50
+#' @param percentage_flag numeric, flag for missing percent in categorical table, default set to 30
 #' @param SMD_flag numeric, flag for standardized mean difference in categorical table, default set to .2
 #' @param cont_boxplots logical, include continuous box plots TRUE or FALSE
 #' @param cont_densplots logical, include continuous density plots TRUE or FALSE
@@ -17,7 +17,7 @@
 #'
 #' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu
 #' @examples
-#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_denseplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
+#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
 #'
 #' Example data from
 #' Jawad M, Hone T, Vamos EP, Cetorelli V, Millett C.
@@ -72,7 +72,7 @@ uniEDA <- function(data,
                    kurtosis_flag = 2,        # continuous criteria
                    outlier_flag = 5,         # continuous criteria
                    min_category = 3,         # minimum number of categories to be considered as categorical variables
-                   percentage_flag = 50,     # categorical criteria
+                   percentage_flag = 30,     # categorical criteria
                    SMD_flag = 0.2,           # categorical criteria
                    cont_boxplots = FALSE,    # continuous plots
                    cont_densplots = FALSE,   # continuous plots
@@ -96,17 +96,17 @@ uniEDA <- function(data,
     stop("Argument must be numeric")
   }
 
-  if(!is.logical(cont_boxplots) || !is.logical(cont_densplots) || !is.logical(cat_barcharts)) {
+  if(!is.logical(cont_boxplots) || !is.logical(cont_densplots) || !is.logical(cat_barcharts) || !is.logical(cont_raw_output) || !is.logical(cat_raw_output)) {
     stop("Arugment must be logic")
   }
 
 
-  library(here())
+
+library(here())
   source(here("R", "cont_tables.R"))
   source(here("R", "cont_plots.R"))
   source(here("R", "cat_tables.R"))
   source(here("R", "cat_barcharts.R"))
-
   # Remove specified variables
   data <- data %>% select(setdiff(names(data), exclud_vars))
 
