@@ -1,4 +1,4 @@
-################test continuous tables#####################################################################
+################ test continuous tables #####################################################################
 test_that("summarize_cont works with a standard dataset", {
   data <- data.frame(
     Var1 = rnorm(100, mean = 50, sd = 10),
@@ -130,9 +130,204 @@ test_that("generate_density_plots works correctly", {
   expect_silent(generate_density_plots(esoph))
 })
 
-########################test uniEDA function#########################################################
+################ test categorical table #####################################################################
 
-#####################test categorical bar charts ###################################################
+#### Test: Output is a kableExtra table ####
+
+test_that("summarize_cat returns a kableExtra object", {
+  data("iris")
+  expect_silent(summarize_cat(iris)) # No errors
+  
+  data("esoph")
+  expect_silent(summarize_cat(esoph))
+}) # test passed
+
+test_that("summarize_cat returns a kableExtra object", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", "C", "B", "A", NA),
+    var2 = c(1, 2, 1, 2, 1, 2, 1)
+  )
+  result <- summarize_cat(data)
+  expect_s3_class(result, "kableExtra")
+}) # test passed
+
+#### Test: With a Standard Dataset ####
+
+test_that("summarize_cat works with a standard dataset", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", NA, "B", "A", NA),
+    var2 = c("X", "Y", "X", "Z", NA, "X", "Y")
+  )
+  
+  result <- summarize_cat(data, cat_raw_output = TRUE)
+  expect_true("Missing" %in% result$Level)
+  expect_true("A" %in% result$Level)
+  expect_s3_class(result, "data.frame")
+}) #test passed
+
+#### Test: Handling of Empty Datasets ####
+
+test_that("summarize_cat handles empty datasets gracefully", {
+  data <- data.frame()
+  expect_error(
+    summarize_cat(data, cat_raw_output = TRUE),
+    "The input dataframe is empty. Please provide a non-empty dataframe."
+  )
+}) #test passed
+
+
+#### Test: NA-Only Dataset ####
+
+test_that("summarize_cat handles NA datasets gracefully", {
+  data <- data.frame(var1 = rep(NA, 10))
+  expect_error(
+    summarize_cat(data, cat_raw_output = TRUE),
+    "The input dataset contains only NA values in all columns. Please provide a valid dataset."
+  )
+}) #test passed
+
+#### Test: Single-Column Dataset ####
+
+test_that("summarize_cat works with a single-column dataset", {
+  data <- data.frame(var1 = c("A", "B", "A", "C", NA, "B", "A"))
+  result <- summarize_cat(data, cat_raw_output = TRUE)
+  expect_true("Missing" %in% result$Level)
+  expect_s3_class(result, "data.frame")
+}) #test passed
+
+
+#### Test: Non-Data Frame Input ####
+
+test_that("summarize_cat errors for non-data frame input", {
+  expect_error(summarize_cat(matrix(1:10, nrow = 2)))
+}) #test passed
+
+
+#### Test: Large Datasets ####
+
+test_that("summarize_cat handles large datasets", {
+  data <- data.frame(matrix(sample(letters, 1e6, replace = TRUE), ncol = 10))
+  result <- summarize_cat(data, cat_raw_output = TRUE)
+  expect_s3_class(result, "data.frame")
+}) # test passed
+
+#### Test: Calculations ####
+
+test_that("summarize_cat calculates metrics correctly", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", NA, "B", "A", NA)
+  )
+  
+  result <- summarize_cat(data, cat_raw_output = TRUE)
+  
+  # Manually calculate expected values
+  expected_freq <- c(3, 2, 2)  # "A", "B", "Missing"
+  expected_percent <- round(100 * expected_freq / sum(expected_freq), 2)
+  expected_levels <- c("A", "B", "Missing")
+  
+  # Validate frequencies, percentages, and levels
+  expect_equal(result$Frequency, expected_freq)
+  expect_equal(result$Percent, expected_percent)
+  expect_equal(result$Level, expected_levels)
+}) #test passed
+
+
+#### Test: Flags ####
+
+test_that("summarize_cat flags work correctly", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", "C", "B", "A", NA, NA, NA, NA)
+  )
+  
+  result <- summarize_cat(data, percentage_flag = 30, SMD_flag = 0.2, cat_raw_output = TRUE)
+  
+  # Print the result for manual inspection
+  print(result)
+  
+  # Check for SMD threshold message
+  expect_true(any(grepl("level exceeds SMD threshold", result$Message, fixed = TRUE)))
+  
+  # Check for missing data percentage message
+  expect_true(any(grepl("is missing", result$Message, fixed = TRUE)))
+}) #test passed
+
+
+#### Test: Multiple Columns ####
+
+test_that("summarize_cat works with multiple categorical variables", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", NA, "B", "A", NA),
+    var2 = c("X", "Y", "X", "Z", NA, "X", "Y")
+  )
+  
+  result <- summarize_cat(data, cat_raw_output = TRUE)
+  
+  # Validate output includes levels and missing data for all variables
+  expect_true(all(c("A", "B", "Missing") %in% result$Level))
+  expect_true(all(c("X", "Y", "Z", "Missing") %in% result$Level))
+}) #test passed
+
+#### Test: Missing Values ####
+test_that("summarize_cat handles missing values correctly", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", NA, "B", "A", NA)
+  )
+  
+  result <- summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
+  
+  # Check that "Missing" is included as a level
+  expect_true("Missing" %in% result$Level)
+  
+  # Check that the percentage for "Missing" is correct
+  missing_row <- result[result$Level == "Missing", ]
+  expect_equal(missing_row$Percent, round(2 / 7 * 100, 2))
+}) # test passed
+
+#### Test: All NA Columns ####
+
+test_that("summarize_cat stops when all columns are NA", {
+  data <- data.frame(
+    var1 = rep(NA, 10)
+  )
+  
+  expect_error(
+    summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE),
+    "The input dataset contains only NA values in all columns. Please provide a valid dataset."
+  )
+}) #test passed
+
+
+#### Test: No Missing Values ####
+
+test_that("summarize_cat works without missing values", {
+  data <- data.frame(
+    var1 = c("A", "B", "A", "B", "C")
+  )
+  
+  result <- summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
+  
+  # Check that "Missing" is not included as a level
+  expect_false("Missing" %in% result$Level)
+})
+
+
+#### Test: Large datasets with Missing Values ####
+
+test_that("summarize_cat handles large datasets with missing values", {
+data <- data.frame(
+  var1 = c(sample(letters[1:5], 1e4, replace = TRUE), rep(NA, 500))
+)
+
+result <- summarize_cat(data, percentage_flag = 10, SMD_flag = 0.2, cat_raw_output = TRUE)
+
+# Check that "Missing" is included
+expect_true("Missing" %in% result$Level)
+}) # test passed
+
+
+######################## test uniEDA function #########################################################
+
+##################### test categorical bar charts ###################################################
 test_that("generate_bar_charts works correctly", {
   data("iris")
   expect_silent(generate_bar_charts(iris)) # No errors
