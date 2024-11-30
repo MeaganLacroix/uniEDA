@@ -93,6 +93,9 @@ summarize_cont <- function(data,
     column_spec(17, color = ifelse(summary_table$CV > cv_flag | summary_table$CVFlag != "", "red", "black")) %>%
     column_spec(18:22, color = "royalblue3")
 
+  # Assign kableExtra class to the kable table
+  class(kable_table) <- c("kableExtra", class(kable_table))
+
   if (cont_raw_output) {
     return(summary_table)
   }
