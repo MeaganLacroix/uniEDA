@@ -25,4 +25,4 @@ Imports:
     kableExtra,
     tidyr
 Suggests: 
-    testthat
+    testthat (>= 3.0.0)

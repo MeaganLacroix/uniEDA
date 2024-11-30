@@ -1,5 +1,4 @@
 
-
 ################ test continuous tables #####################################################################
 test_that("summarize_cont works with a standard dataset", {
   data <- data.frame(
