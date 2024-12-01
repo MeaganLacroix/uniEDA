@@ -2,7 +2,7 @@
 % Please edit documentation in R/uniEDA.R
 \name{uniEDA}
 \alias{uniEDA}
-\title{univariate exploratory data analysis}
+\title{Univariate exploratory data analysis}
 \usage{
 uniEDA(
   data,
@@ -12,88 +12,95 @@ uniEDA(
   kurtosis_flag = 2,
   outlier_flag = 5,
   min_category = 3,
-  percentage_flag = 30,
+  percentage_missing = 30,
   SMD_flag = 0.2,
   cont_boxplots = FALSE,
   cont_densplots = FALSE,
   cat_barcharts = FALSE,
   cont_raw_output = FALSE,
   cat_raw_output = FALSE,
-  exclud_vars = NULL
+  exclude_vars = NULL
 )
 }
 \arguments{
-\item{data}{data frame, any dataset containing continuous and/or categorical data}
+\item{data}{Data frame, any dataset containing continuous and/or categorical data.}
 
-\item{cv_flag}{numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30}
+\item{cv_flag}{Numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30.}
 
-\item{missing_flag}{numeric, flag for percentage of missing data in continuous table, default set to 5%}
+\item{missing_flag}{Numeric, flag for percentage of missing data in continuous table, default set to 5\%.}
 
-\item{skewness_flag}{numeric, flag for skewness in continuous table, default set to 2}
+\item{skewness_flag}{Numeric, flag for skewness in continuous table, default set to 2.}
 
-\item{kurtosis_flag}{numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2}
+\item{kurtosis_flag}{Numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2.}
 
-\item{outlier_flag}{numeric, flag for percentage of data that are outliers in continuous table, default set to 5%}
+\item{outlier_flag}{Numeric, flag for percentage of data that are outliers in continuous table, default set to 5\%.}
 
-\item{min_category}{numeric, minimum number of categories to be considered as categorical variables, default set to 3}
+\item{min_category}{Numeric, minimum number of categories to be considered as categorical variables, default set to 3.}
 
-\item{percentage_flag}{numeric, flag for missing percent in categorical table, default set to 30}
+\item{percentage_missing}{Numeric, flag for missing percent in categorical table, default set to 30\%.}
 
-\item{SMD_flag}{numeric, flag for standardized mean difference in categorical table, default set to .2}
+\item{SMD_flag}{Numeric, flag for standardized mean difference in categorical table, default set to .2.}
 
-\item{cont_boxplots}{logical, include continuous box plots TRUE or FALSE}
+\item{cont_boxplots}{Logical, include continuous box plots TRUE or FALSE.}
 
-\item{cont_densplots}{logical, include continuous density plots TRUE or FALSE}
+\item{cont_densplots}{Logical, include continuous density plots TRUE or FALSE.}
 
-\item{cat_barcharts}{logical, include categorical bar charts TRUE or FALSE}
+\item{cat_barcharts}{Logical, include categorical bar charts TRUE or FALSE.}
 
-\item{cont_raw_output}{logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table}
+\item{cont_raw_output}{Logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table.}
 
-\item{exclud_vars}{character, variables in dataset to be excluded}
+\item{exclude_vars}{Character, variables in dataset to be excluded.}
 }
 \value{
-Continuous summary table: A tibble (if `cont_raw_output = TRUE`) or a `kableExtra` object (if `cont_raw_output = FALSE`):
-
-- **Variable**: Name of the variable.
-- **N**: Number of non-missing values.
-- **Missing**: Number of missing values.
-- **Missingpercent**: Percentage of missing values.
-- **Mean**: Mean of the variable.
-- **Median**: Median of the variable.
-- **SD**: Standard deviation.
-- **Min**: Minimum value.
-- **Max**: Maximum value.
-- **Q1**: First quartile.
-- **Q3**: Third quartile.
-- **IQR**: Interquartile range.
-- **Skewness**: Skewness of the variable.
-- **Kurtosis**: Kurtosis of the variable.
-- **NOutliers**: Number of outliers.
-- **PercentOutliers**: Percentage of outliers.
-- **Flags**: Columns for flagged variables, such as `SkewnessFlag`, `KurtosisFlag`, `MissingFlag`, `CVFlag`, and `OutlierFlag`.
-
-Categorical summary table: A tibble (if `cat_raw_output = TRUE`) or a `kableExtra` object (if `cat_raw_output = FALSE`):
-
-   - **Variable**: Name of the variable.
-   - **Level**: Category levels.
-   - **Frequency**: Frequency of each category.
-   - **Percent**: Frequency percentage of each category.
-   - **SMD**: Standardized mean difference between levels
-
-Boxplots for Continuous Variables (if cont_boxplots = TRUE)
-   A `ggplot2` object showing boxplots of continuous variables.
-
-Density Plots for Continuous Variables (if cont_densplots = TRUE)
-   A `ggplot2` object showing density plots for continuous variables.
-
-Bar Charts for Categorical Variables (if cat_barcharts = TRUE)
-   A `ggplot2` object showing bar charts for categorical variables
+\describe{
+  \item{Continuous summary table}{
+    A tibble (if \code{cont_raw_output = TRUE}) or a \code{kableExtra} object (if \code{cont_raw_output = FALSE}):
+    \itemize{
+      \item \strong{Variable}: Name of the variable.
+      \item \strong{N}: Number of non-missing values.
+      \item \strong{Missing}: Number of missing values.
+      \item \strong{Missingpercent}: Percentage of missing values.
+      \item \strong{Mean}: Mean of the variable.
+      \item \strong{Median}: Median of the variable.
+      \item \strong{SD}: Standard deviation.
+      \item \strong{Min}: Minimum value.
+      \item \strong{Max}: Maximum value.
+      \item \strong{Q1}: First quartile.
+      \item \strong{Q3}: Third quartile.
+      \item \strong{IQR}: Interquartile range.
+      \item \strong{Skewness}: Skewness of the variable.
+      \item \strong{Kurtosis}: Kurtosis of the variable.
+      \item \strong{NOutliers}: Number of outliers.
+      \item \strong{PercentOutliers}: Percentage of outliers.
+      \item \strong{Flags}: Columns for flagged variables, such as \code{SkewnessFlag}, \code{KurtosisFlag}, \code{MissingFlag}, \code{CVFlag}, and \code{OutlierFlag}.
+    }
+  }
+  \item{Categorical summary table}{
+    A tibble (if \code{cat_raw_output = TRUE}) or a \code{kableExtra} object (if \code{cat_raw_output = FALSE}):
+    \itemize{
+      \item \strong{Variable}: Name of the variable.
+      \item \strong{Level}: Category levels.
+      \item \strong{Frequency}: Frequency of each category.
+      \item \strong{Percent}: Frequency percentage of each category.
+      \item \strong{SMD}: Standardized mean difference between levels.
+    }
+  }
+  \item{Boxplots for Continuous Variables (if cont_boxplots = TRUE)}{
+    A \code{ggplot2} object showing boxplots of continuous variables.
+  }
+  \item{Density Plots for Continuous Variables (if cont_densplots = TRUE)}{
+    A \code{ggplot2} object showing density plots for continuous variables.
+  }
+  \item{Bar Charts for Categorical Variables (if cat_barcharts = TRUE)}{
+    A \code{ggplot2} object showing bar charts for categorical variables.
+  }
+}
 }
 \description{
-a function that returns descriptive tables and figures for continuous and categorical data
+A function that returns descriptive tables and figures for continuous and categorical data.
 }
 \examples{
-uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
+uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclude_vars = "ISO")
 
 }
 \references{
@@ -102,5 +109,5 @@ Implications of armed conflict for maternal and child health: A regression analy
 PLoS Med. 2021 Sep 28;18(9):e1003810. doi: 10.1371/journal.pmed.1003810. PMID: 34582455; PMCID: PMC8478221.
 }
 \author{
-Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu
+Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu.
 }

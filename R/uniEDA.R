@@ -1,23 +1,25 @@
-#' @title  univariate exploratory data analysis
-#' @description a function that returns descriptive tables and figures for continuous and categorical data
-#' @param data data frame, any dataset containing continuous and/or categorical data
-#' @param cv_flag numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30
-#' @param missing_flag numeric, flag for percentage of missing data in continuous table, default set to 5%
-#' @param skewness_flag numeric, flag for skewness in continuous table, default set to 2
-#' @param kurtosis_flag numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2
-#' @param outlier_flag numeric, flag for percentage of data that are outliers in continuous table, default set to 5%
-#' @param min_category numeric, minimum number of categories to be considered as categorical variables, default set to 3
-#' @param percentage_flag numeric, flag for missing percent in categorical table, default set to 30
-#' @param SMD_flag numeric, flag for standardized mean difference in categorical table, default set to .2
-#' @param cont_boxplots logical, include continuous box plots TRUE or FALSE
-#' @param cont_densplots logical, include continuous density plots TRUE or FALSE
-#' @param cat_barcharts logical, include categorical bar charts TRUE or FALSE
-#' @param cont_raw_output logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table
-#' @param exclud_vars character, variables in dataset to be excluded
+#' @title  Univariate exploratory data analysis
+#' @description A function that returns descriptive tables and figures for continuous and categorical data.
 #'
-#' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu
+#' @param data Data frame, any dataset containing continuous and/or categorical data.
+#' @param cv_flag Numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30.
+#' @param missing_flag Numeric, flag for percentage of missing data in continuous table, default set to 5\%.
+#' @param skewness_flag Numeric, flag for skewness in continuous table, default set to 2.
+#' @param kurtosis_flag Numeric, flag for excess kurtosis (kurtosis - 3) in continuous table, default set to 2.
+#' @param outlier_flag Numeric, flag for percentage of data that are outliers in continuous table, default set to 5\%.
+#' @param min_category Numeric, minimum number of categories to be considered as categorical variables, default set to 3.
+#' @param percentage_missing Numeric, flag for missing percent in categorical table, default set to 30\%.
+#' @param SMD_flag Numeric, flag for standardized mean difference in categorical table, default set to .2.
+#' @param cont_boxplots Logical, include continuous box plots TRUE or FALSE.
+#' @param cont_densplots Logical, include continuous density plots TRUE or FALSE.
+#' @param cat_barcharts Logical, include categorical bar charts TRUE or FALSE.
+#' @param cont_raw_output Logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table.
+#' @param exclude_vars Character, variables in dataset to be excluded.
+#'
+#' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu.
+#'
 #' @examples
-#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclud_vars = "ISO")
+#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclude_vars = "ISO")
 #'
 #' @references
 #' Jawad M, Hone T, Vamos EP, Cetorelli V, Millett C.
@@ -25,46 +27,51 @@
 #' PLoS Med. 2021 Sep 28;18(9):e1003810. doi: 10.1371/journal.pmed.1003810. PMID: 34582455; PMCID: PMC8478221.
 #'
 #' @return
-#' Continuous summary table: A tibble (if `cont_raw_output = TRUE`) or a `kableExtra` object (if `cont_raw_output = FALSE`):
-#'
-#' - **Variable**: Name of the variable.
-#' - **N**: Number of non-missing values.
-#' - **Missing**: Number of missing values.
-#' - **Missingpercent**: Percentage of missing values.
-#' - **Mean**: Mean of the variable.
-#' - **Median**: Median of the variable.
-#' - **SD**: Standard deviation.
-#' - **Min**: Minimum value.
-#' - **Max**: Maximum value.
-#' - **Q1**: First quartile.
-#' - **Q3**: Third quartile.
-#' - **IQR**: Interquartile range.
-#' - **Skewness**: Skewness of the variable.
-#' - **Kurtosis**: Kurtosis of the variable.
-#' - **NOutliers**: Number of outliers.
-#' - **PercentOutliers**: Percentage of outliers.
-#' - **Flags**: Columns for flagged variables, such as `SkewnessFlag`, `KurtosisFlag`, `MissingFlag`, `CVFlag`, and `OutlierFlag`.
-#'
-#' Categorical summary table: A tibble (if `cat_raw_output = TRUE`) or a `kableExtra` object (if `cat_raw_output = FALSE`):
-#'
-#'    - **Variable**: Name of the variable.
-#'    - **Level**: Category levels.
-#'    - **Frequency**: Frequency of each category.
-#'    - **Percent**: Frequency percentage of each category.
-#'    - **SMD**: Standardized mean difference between levels
-#'
-#' Boxplots for Continuous Variables (if cont_boxplots = TRUE)
-#'    A `ggplot2` object showing boxplots of continuous variables.
-#'
-#' Density Plots for Continuous Variables (if cont_densplots = TRUE)
-#'    A `ggplot2` object showing density plots for continuous variables.
-#'
-#' Bar Charts for Categorical Variables (if cat_barcharts = TRUE)
-#'    A `ggplot2` object showing bar charts for categorical variables
-#'
+#' \describe{
+#'   \item{Continuous summary table}{
+#'     A tibble (if \code{cont_raw_output = TRUE}) or a \code{kableExtra} object (if \code{cont_raw_output = FALSE}):
+#'     \itemize{
+#'       \item \strong{Variable}: Name of the variable.
+#'       \item \strong{N}: Number of non-missing values.
+#'       \item \strong{Missing}: Number of missing values.
+#'       \item \strong{Missingpercent}: Percentage of missing values.
+#'       \item \strong{Mean}: Mean of the variable.
+#'       \item \strong{Median}: Median of the variable.
+#'       \item \strong{SD}: Standard deviation.
+#'       \item \strong{Min}: Minimum value.
+#'       \item \strong{Max}: Maximum value.
+#'       \item \strong{Q1}: First quartile.
+#'       \item \strong{Q3}: Third quartile.
+#'       \item \strong{IQR}: Interquartile range.
+#'       \item \strong{Skewness}: Skewness of the variable.
+#'       \item \strong{Kurtosis}: Kurtosis of the variable.
+#'       \item \strong{NOutliers}: Number of outliers.
+#'       \item \strong{PercentOutliers}: Percentage of outliers.
+#'       \item \strong{Flags}: Columns for flagged variables, such as \code{SkewnessFlag}, \code{KurtosisFlag}, \code{MissingFlag}, \code{CVFlag}, and \code{OutlierFlag}.
+#'     }
+#'   }
+#'   \item{Categorical summary table}{
+#'     A tibble (if \code{cat_raw_output = TRUE}) or a \code{kableExtra} object (if \code{cat_raw_output = FALSE}):
+#'     \itemize{
+#'       \item \strong{Variable}: Name of the variable.
+#'       \item \strong{Level}: Category levels.
+#'       \item \strong{Frequency}: Frequency of each category.
+#'       \item \strong{Percent}: Frequency percentage of each category.
+#'       \item \strong{SMD}: Standardized mean difference between levels.
+#'     }
+#'   }
+#'   \item{Boxplots for Continuous Variables (if cont_boxplots = TRUE)}{
+#'     A \code{ggplot2} object showing boxplots of continuous variables.
+#'   }
+#'   \item{Density Plots for Continuous Variables (if cont_densplots = TRUE)}{
+#'     A \code{ggplot2} object showing density plots for continuous variables.
+#'   }
+#'   \item{Bar Charts for Categorical Variables (if cat_barcharts = TRUE)}{
+#'     A \code{ggplot2} object showing bar charts for categorical variables.
+#'   }
+#' }
 #' @export
-#'
-#'
+
 uniEDA <- function(data,
                    cv_flag = 30,             # continuous criteria
                    missing_flag = 5,         # continuous criteria
@@ -72,14 +79,14 @@ uniEDA <- function(data,
                    kurtosis_flag = 2,        # continuous criteria
                    outlier_flag = 5,         # continuous criteria
                    min_category = 3,         # minimum number of categories to be considered as categorical variables
-                   percentage_flag = 30,     # categorical criteria
+                   percentage_missing = 30,     # categorical criteria
                    SMD_flag = 0.2,           # categorical criteria
                    cont_boxplots = FALSE,    # continuous plots
                    cont_densplots = FALSE,   # continuous plots
                    cat_barcharts = FALSE,    # categorical plots
                    cont_raw_output = FALSE,  # produce raw output in summary table
                    cat_raw_output = FALSE,
-                   exclud_vars = NULL        # variables to be excluded, such as IDs
+                   exclude_vars = NULL        # variables to be excluded, such as IDs
 ) {
 
   # Check if the dataframe is empty
@@ -92,7 +99,7 @@ uniEDA <- function(data,
   }
 
   if (!is.numeric(cv_flag) || !is.numeric(missing_flag) || !is.numeric(skewness_flag) || !is.numeric(kurtosis_flag)
-      || !is.numeric(outlier_flag) || !is.numeric(min_category) || !is.numeric(percentage_flag) || !is.numeric(SMD_flag)) {
+      || !is.numeric(outlier_flag) || !is.numeric(min_category) || !is.numeric(percentage_missing) || !is.numeric(SMD_flag)) {
     stop("Argument must be numeric")
   }
 
@@ -108,7 +115,7 @@ library(here())
   source(here("R", "cat_tables.R"))
   source(here("R", "cat_barcharts.R"))
   # Remove specified variables
-  data <- data %>% select(setdiff(names(data), exclud_vars))
+  data <- data %>% select(setdiff(names(data), exclude_vars))
 
   # Functions to filter continuous variables
   identify_continuous_vars <- function(data, min_category = 3) {
@@ -159,7 +166,7 @@ library(here())
     # Create summary table for categorical variables
     readline("Press Enter to proceed to categorical summary table...")
     print(summarize_cat(cat_data,
-                        percentage_flag = percentage_flag,
+                        percentage_missing = percentage_missing,
                         SMD_flag = SMD_flag,
                         cat_raw_output = cat_raw_output))
 
