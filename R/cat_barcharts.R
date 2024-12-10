@@ -3,7 +3,7 @@
 
 #' @title a function to generate bar charts for categorical data
 #'
-#' @param data
+#' @param data a dataframe
 #'
 #' @return plot
 #' @export

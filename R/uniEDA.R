@@ -1,6 +1,9 @@
 #' @title  Univariate exploratory data analysis
 #' @description A function that returns descriptive tables and figures for continuous and categorical data.
 #'
+#' @import dplyr
+#'
+#'
 #' @param data Data frame, any dataset containing continuous and/or categorical data.
 #' @param cv_flag Numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30.
 #' @param missing_flag Numeric, flag for percentage of missing data in continuous table, default set to 5\%.
@@ -86,7 +89,7 @@ uniEDA <- function(data,
                    cont_densplots = FALSE,   # continuous plots
                    cat_barcharts = FALSE,    # categorical plots
                    cont_raw_output = FALSE,  # produce raw output in summary table
-                   cat_raw_output = FALSE,
+                   cat_raw_output = FALSE,   # produce raw output in summary table
                    exclude_vars = NULL        # variables to be excluded, such as IDs
 ) {
 
@@ -108,11 +111,6 @@ uniEDA <- function(data,
     stop("Argument must be logic")
   }
 
-library(here())
-  source(here("R", "cont_tables.R"))
-  source(here("R", "cont_plots.R"))
-  source(here("R", "cat_tables.R"))
-  source(here("R", "cat_barcharts.R"))
 
   # Remove specified variables
   data <- data %>% select(setdiff(names(data), exclude_vars))

@@ -7,7 +7,7 @@
 generate_bar_charts(data)
 }
 \arguments{
-\item{data}{}
+\item{data}{a dataframe}
 }
 \value{
 plot
