@@ -102,7 +102,12 @@ uniEDA(
 A function that returns descriptive tables and figures for continuous and categorical data.
 }
 \examples{
-uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclude_vars = "ISO")
+uniEDA(
+armed_conf,
+cont_boxplots = TRUE,
+cont_densplots = TRUE,
+cat_barcharts = TRUE,
+exclude_vars = "ISO")
 
 }
 \references{

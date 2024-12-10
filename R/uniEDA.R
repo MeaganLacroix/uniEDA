@@ -22,7 +22,12 @@
 #' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu.
 #'
 #' @examples
-#' uniEDA(armed_conf, cont_boxplots = TRUE, cont_densplots = TRUE, cat_barcharts = TRUE, exclude_vars = "ISO")
+#' uniEDA(
+#' armed_conf,
+#' cont_boxplots = TRUE,
+#' cont_densplots = TRUE,
+#' cat_barcharts = TRUE,
+#' exclude_vars = "ISO")
 #'
 #' @references
 #' Jawad M, Hone T, Vamos EP, Cetorelli V, Millett C.
