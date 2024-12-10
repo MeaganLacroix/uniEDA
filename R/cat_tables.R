@@ -1,7 +1,21 @@
+#' @title a function to generate a summary table for categorical data
+#'
+#' @param data a dataframe
+#' @param percentage_missing numeric flag for percent missing data
+#' @param SMD_flag numeric flag for standardized mean difference
+#' @param cat_raw_output boolean indicator, TRUE will return raw output table and FALSE will return kable table
+#'
+#' @return kable_table
+#' @export
+#'
+#'
+#'
 summarize_cat <- function(data,
                           percentage_missing = 30,
                           SMD_flag = 0.2,
                           cat_raw_output = FALSE) {
+  library(dplyr)
+  library(kableExtra)
   # Check for empty dataframe
   if (nrow(data) == 0) {
     stop("The input dataframe is empty. Please provide a non-empty dataframe.")

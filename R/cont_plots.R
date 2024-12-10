@@ -1,7 +1,21 @@
-# load required package
-library(ggplot2)
 
+
+#' @title a function to generate boxplots and density plots for continuous data
+#'
+#' @param data a dataframe
+#' @param save_plots boolean, if TRUE will save plots in specified directory
+#' @param output_dir directory for saving plots
+#'
+#' @return p
+#' @export
+#'
+#'
+#'
+#'
 generate_boxplots <- function(data, save_plots = FALSE, output_dir = "boxplots") {
+  # load required package
+  library(ggplot2)
+
   # Create directory for saving plots, if needed
   if (save_plots && !dir.exists(output_dir)) {
     dir.create(output_dir)

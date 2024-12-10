@@ -1,11 +1,3 @@
-library(here)
-
-source(here("R", "cont_tables.R"))
-source(here("R", "cont_plots.R"))
-source(here("R", "cat_tables.R"))
-source(here("R", "cat_barcharts.R"))
-source(here("R", "uniEDA.R"))
-
 
 ################ test continuous tables #####################################################################
 test_that("summarize_cont works with a standard dataset", {
@@ -122,22 +114,6 @@ test_that("summarize_cont flags work correctly", {
 })
 
 
-##################### test continuous plots ####################################
-test_that("generate_boxplots works correctly", {
-  data("iris")
-  expect_silent(generate_boxplots(iris)) # No errors
-
-  data("esoph")
-  expect_silent(generate_boxplots(esoph))
-})
-
-test_that("generate_density_plots works correctly", {
-  data("iris")
-  expect_silent(generate_density_plots(iris)) # No errors
-
-  data("esoph")
-  expect_silent(generate_density_plots(esoph))
-})
 
 ################ test categorical table #####################################################################
 
@@ -248,7 +224,7 @@ test_that("summarize_cat flags work correctly", {
     var1 = c("A", "B", "A", "C", "B", "A", NA, NA, NA, NA)
   )
 
-  result <- summarize_cat(data, percentage_flag = 30, SMD_flag = 0.2, cat_raw_output = TRUE)
+  result <- summarize_cat(data, percentage_missing = 30, SMD_flag = 0.2, cat_raw_output = TRUE)
 
   # Print the result for manual inspection
   print(result)
@@ -282,7 +258,7 @@ test_that("summarize_cat handles missing values correctly", {
     var1 = c("A", "B", "A", NA, "B", "A", NA)
   )
 
-  result <- summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
+  result <- summarize_cat(data, percentage_missing = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
 
   # Check that "Missing" is included as a level
   expect_true("Missing" %in% result$Level)
@@ -300,7 +276,7 @@ test_that("summarize_cat stops when all columns are NA", {
   )
 
   expect_error(
-    summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE),
+    summarize_cat(data, percentage_missing = 50, SMD_flag = 0.2, cat_raw_output = TRUE),
     "The input dataset contains only NA values in all columns. Please provide a valid dataset."
   )
 }) #test passed
@@ -313,7 +289,7 @@ test_that("summarize_cat works without missing values", {
     var1 = c("A", "B", "A", "B", "C")
   )
 
-  result <- summarize_cat(data, percentage_flag = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
+  result <- summarize_cat(data, percentage_missing = 50, SMD_flag = 0.2, cat_raw_output = TRUE)
 
   # Check that "Missing" is not included as a level
   expect_false("Missing" %in% result$Level)
@@ -327,21 +303,14 @@ test_that("summarize_cat handles large datasets with missing values", {
     var1 = c(sample(letters[1:5], 1e4, replace = TRUE), rep(NA, 500))
   )
 
-  result <- summarize_cat(data, percentage_flag = 10, SMD_flag = 0.2, cat_raw_output = TRUE)
+  result <- summarize_cat(data, percentage_missing = 10, SMD_flag = 0.2, cat_raw_output = TRUE)
 
   # Check that "Missing" is included
   expect_true("Missing" %in% result$Level)
 }) # test passed
 
 
-##################### test categorical bar charts ###################################################
-test_that("generate_bar_charts works correctly", {
-  data("iris")
-  expect_silent(generate_bar_charts(iris)) # No errors
 
-  data("esoph")
-  expect_silent(generate_bar_charts(esoph))
-})
 
 ######################## test uniEDA function #########################################################
 
@@ -357,6 +326,23 @@ test_that("uniEDA handles NA datasets gracefully", {
   expect_error(
     uniEDA(data),
     "The input dataset contains only NA values in all columns. Please provide a valid dataset.")
+})
+
+##################### test continuous plots ####################################
+test_that("generate_boxplots works correctly", {
+  data("iris")
+  expect_silent(generate_boxplots(iris)) # No errors
+
+  data("esoph")
+  expect_silent(generate_boxplots(esoph))
+})
+
+test_that("generate_density_plots works correctly", {
+  data("iris")
+  expect_silent(generate_density_plots(iris)) # No errors
+
+  data("esoph")
+  expect_silent(generate_density_plots(esoph))
 })
 
 #NOT TESTING FOR NOW
@@ -390,7 +376,7 @@ test_that("uniEDA handles NA datasets gracefully", {
 #   expect_error(uniEDA(data, kurtosis_flag = "non-numeric"), "Argument must be numeric")
 #   expect_error(uniEDA(data, outlier_flag = "non-numeric"), "Argument must be numeric")
 #   expect_error(uniEDA(data, min_category = "non-numeric"), "Argument must be numeric")
-#   expect_error(uniEDA(data, percentage_flag = "non-numeric"), "Argument must be numeric")
+#   expect_error(uniEDA(data, percentage_missing = "non-numeric"), "Argument must be numeric")
 #   expect_error(uniEDA(data, SMD_flag = "non-numeric"), "Argument must be numeric")
 # })
 #

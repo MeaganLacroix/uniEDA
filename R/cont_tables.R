@@ -1,8 +1,19 @@
-library(dplyr)
-library(tidyr)
-library(kableExtra)
-library(e1071)
 
+
+#' @title a function to generate a summary table for continuous variables
+#'
+#' @param data a dataframe
+#' @param cv_flag numeric flag for coefficient of variation
+#' @param missing_flag numeric flag for percent of missing data
+#' @param skewness_flag numeric flag for skewness level
+#' @param kurtosis_flag numeric flag for kurtosis level
+#' @param outlier_flag numeric flag for number of outliers
+#' @param cont_raw_output boolean, if TRUE, will return raw output, if FALSE, will return kable table
+#'
+#' @return kable_table
+#' @export
+#'
+#'
 summarize_cont <- function(data,
                            cv_flag = 30,
                            missing_flag = 5,
@@ -10,6 +21,12 @@ summarize_cont <- function(data,
                            kurtosis_flag = 2,
                            outlier_flag = 5,
                            cont_raw_output = FALSE) {
+
+  library(dplyr)
+  library(tidyr)
+  library(kableExtra)
+  library(e1071)
+
   # Check if the dataframe is empty
   if (nrow(data) == 0) {
     stop("The input dataframe is empty. Please provide a non-empty dataframe.")

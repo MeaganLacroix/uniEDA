@@ -1,9 +1,20 @@
-library(here)
-library(ggplot2)
-library(dplyr)
 
-# Function to generate bar charts for categorical variables
+
+
+#' @title a function to generate bar charts for categorical data
+#'
+#' @param data
+#'
+#' @return plot
+#' @export
+#'
+#'
+#'
 generate_bar_charts <- function(data) {
+  library(here)
+  library(ggplot2)
+  library(dplyr)
+
   # Generate and display bar charts
   for (var in names(data)) {
     # Get unique values of the variable

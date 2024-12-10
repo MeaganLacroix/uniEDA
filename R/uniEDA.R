@@ -14,6 +14,7 @@
 #' @param cont_densplots Logical, include continuous density plots TRUE or FALSE.
 #' @param cat_barcharts Logical, include categorical bar charts TRUE or FALSE.
 #' @param cont_raw_output Logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table.
+#' @param cat_raw_output Logical, if TRUE, returns categorical summary table as raw data, if FALSE, returns kable table.
 #' @param exclude_vars Character, variables in dataset to be excluded.
 #'
 #' @author Meagan Lacroix, Rebecca Raj, Syeda Aiman Fatima, Xinze Yu, Xingchen Hu.
@@ -107,13 +108,12 @@ uniEDA <- function(data,
     stop("Argument must be logic")
   }
 
-
-
 library(here())
   source(here("R", "cont_tables.R"))
   source(here("R", "cont_plots.R"))
   source(here("R", "cat_tables.R"))
   source(here("R", "cat_barcharts.R"))
+
   # Remove specified variables
   data <- data %>% select(setdiff(names(data), exclude_vars))
 

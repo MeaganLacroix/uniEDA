@@ -49,6 +49,8 @@ uniEDA(
 
 \item{cont_raw_output}{Logical, if TRUE, returns continuous summary table as raw data, if FALSE, returns kable table.}
 
+\item{cat_raw_output}{Logical, if TRUE, returns categorical summary table as raw data, if FALSE, returns kable table.}
+
 \item{exclude_vars}{Character, variables in dataset to be excluded.}
 }
 \value{
