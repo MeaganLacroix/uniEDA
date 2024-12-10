@@ -3,7 +3,6 @@
 #'
 #' @import dplyr
 #'
-#'
 #' @param data Data frame, any dataset containing continuous and/or categorical data.
 #' @param cv_flag Numeric, coefficient of variation flag in continuous table, calculated as SD/mean*100, default set to 30.
 #' @param missing_flag Numeric, flag for percentage of missing data in continuous table, default set to 5\%.

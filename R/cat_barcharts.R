@@ -9,7 +9,6 @@
 #' @export
 #'
 #'
-#'
 generate_bar_charts <- function(data) {
   library(here)
   library(ggplot2)
