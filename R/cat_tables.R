@@ -125,6 +125,9 @@ summarize_cat <- function(data,
       bootstrap_options = c("striped", "hover", "condensed", "responsive"),
       full_width = FALSE
     ) %>%
+    column_spec(4, color = ifelse(
+      result$Level == "Missing" & result$Percent > percentage_missing,
+      "red","black")) %>%
     column_spec(5, color = ifelse(!is.na(result$SMD) & result$SMD > SMD_flag,
                                   "red", "black")) %>%
     column_spec(6, color = "royalblue3")
