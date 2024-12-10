@@ -75,9 +75,13 @@ summarize_cat <- function(data,
     valid_smd <- c(smd, NA)[match(valid_levels, c(non_missing_levels, "Missing"))]
 
     # Create Messages
+    num_levels <- length(non_missing_levels)
     messages <- ifelse(valid_smd > SMD_flag & !is.na(valid_smd),
-                       paste(var, "level exceeds SMD threshold. Consider collapsing categories."),
+                       ifelse(num_levels > 3,
+                              paste(var, "level exceeds SMD threshold. Consider collapsing categories."),
+                              "Categorical level exceeds SMD threshold"),
                        "")
+
     if ("Missing" %in% valid_levels) {
       missing_percent <- valid_percent[valid_levels == "Missing"]
       if (missing_percent > percentage_missing) {
