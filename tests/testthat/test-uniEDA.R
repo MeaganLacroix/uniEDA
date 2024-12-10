@@ -331,19 +331,29 @@ test_that("uniEDA handles NA datasets gracefully", {
 ##################### test continuous plots ####################################
 test_that("generate_boxplots works correctly", {
   data("iris")
-  expect_silent(generate_boxplots(iris)) # No errors
+  expect_no_error(generate_boxplots(iris)) # No errors
 
   data("esoph")
-  expect_silent(generate_boxplots(esoph))
+  expect_no_error(generate_boxplots(esoph))
 })
 
 test_that("generate_density_plots works correctly", {
   data("iris")
-  expect_silent(generate_density_plots(iris)) # No errors
+  expect_no_error(generate_density_plots(iris)) # No errors
 
   data("esoph")
-  expect_silent(generate_density_plots(esoph))
+  expect_no_error(generate_density_plots(esoph))
 })
+
+##################### test categorical bar charts ###################################################
+test_that("generate_bar_charts works correctly", {
+  data("iris")
+  expect_no_error(generate_bar_charts(iris)) # No errors
+
+  data("esoph")
+  expect_no_error(generate_bar_charts(esoph))
+})
+
 
 #NOT TESTING FOR NOW
 # test_that("uniEDA works with a single-column dataset", {
