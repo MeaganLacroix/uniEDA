@@ -2,10 +2,12 @@ uniEDA streamlines univariate exploratory data analysis, offering detailed summa
 
 ## Installation Instructions
 
-install.packages("devtools") 
- library(devtools)
- devtools::install_github("MeaganLacroix/uniEDA")
- library(uniEDA)
+```r
+install.packages("devtools")
+library(devtools)
+devtools::install_github("MeaganLacroix/uniEDA")
+library(uniEDA)
+'''
 
 
  
